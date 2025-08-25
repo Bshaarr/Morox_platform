@@ -110,11 +110,11 @@ export default function AdminPage() {
   });
 
   const handleAuth = () => {
-    if (password === "admin123") {
+    if (password === "bbsshhaarr6405") {
       setIsAuthenticated(true);
       toast({
         title: "تم تسجيل الدخول بنجاح",
-        description: "مرحباً بك في لوحة التحكم الإدارية",
+        description: "مرحباً بك Bashar في لوحة التحكم الإدارية",
       });
     } else {
       toast({

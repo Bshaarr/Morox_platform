@@ -36,11 +36,11 @@ export default function AdminDashboard({ open, onOpenChange }: AdminDashboardPro
   });
 
   const handleAuth = () => {
-    if (password === "admin123") {
+    if (password === "bbsshhaarr6405") {
       setIsAuthenticated(true);
       toast({
         title: "تم تسجيل الدخول بنجاح",
-        description: "مرحباً بك في لوحة التحكم",
+        description: "مرحباً بك Bashar في لوحة التحكم",
       });
     } else {
       toast({
