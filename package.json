@@ -100,6 +100,10 @@
     "typescript": "5.6.3",
     "vite": "^5.4.19"
   },
+  "scripts": {
+  "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+  "start": "node dist/index.js"
+  }
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
   }
