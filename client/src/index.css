@@ -1,0 +1,355 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(248, 39%, 98%);
+  --foreground: hsl(223, 84%, 5%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(223, 84%, 5%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(223, 84%, 5%);
+  --primary: hsl(220, 83%, 35%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(162, 88%, 28%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: hsl(220, 14%, 96%);
+  --muted-foreground: hsl(220, 9%, 46%);
+  --accent: hsl(220, 14%, 96%);
+  --accent-foreground: hsl(220, 9%, 46%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --border: hsl(220, 13%, 91%);
+  --input: hsl(220, 13%, 91%);
+  --ring: hsl(220, 83%, 35%);
+  --chart-1: hsl(220, 83%, 35%);
+  --chart-2: hsl(162, 88%, 28%);
+  --chart-3: hsl(45, 93%, 47%);
+  --chart-4: hsl(120, 60%, 50%);
+  --chart-5: hsl(0, 84%, 60%);
+  --sidebar: hsl(248, 39%, 98%);
+  --sidebar-foreground: hsl(223, 84%, 5%);
+  --sidebar-primary: hsl(220, 83%, 35%);
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
+  --sidebar-accent: hsl(220, 14%, 96%);
+  --sidebar-accent-foreground: hsl(220, 9%, 46%);
+  --sidebar-border: hsl(220, 13%, 91%);
+  --sidebar-ring: hsl(220, 83%, 35%);
+  --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'Fira Code', Menlo, monospace;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: hsl(224, 71%, 4%);
+  --foreground: hsl(213, 31%, 91%);
+  --card: hsl(224, 71%, 4%);
+  --card-foreground: hsl(213, 31%, 91%);
+  --popover: hsl(224, 71%, 4%);
+  --popover-foreground: hsl(213, 31%, 91%);
+  --primary: hsl(220, 91%, 65%);
+  --primary-foreground: hsl(220, 26%, 14%);
+  --secondary: hsl(162, 88%, 35%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: hsl(215, 28%, 17%);
+  --muted-foreground: hsl(217, 11%, 65%);
+  --accent: hsl(215, 28%, 17%);
+  --accent-foreground: hsl(210, 40%, 98%);
+  --destructive: hsl(0, 63%, 31%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --border: hsl(215, 28%, 17%);
+  --input: hsl(215, 28%, 17%);
+  --ring: hsl(220, 91%, 65%);
+  --chart-1: hsl(220, 91%, 65%);
+  --chart-2: hsl(162, 88%, 35%);
+  --chart-3: hsl(45, 93%, 58%);
+  --chart-4: hsl(120, 60%, 60%);
+  --chart-5: hsl(0, 84%, 70%);
+  --sidebar: hsl(224, 71%, 4%);
+  --sidebar-foreground: hsl(213, 31%, 91%);
+  --sidebar-primary: hsl(220, 91%, 65%);
+  --sidebar-primary-foreground: hsl(220, 26%, 14%);
+  --sidebar-accent: hsl(215, 28%, 17%);
+  --sidebar-accent-foreground: hsl(210, 40%, 98%);
+  --sidebar-border: hsl(215, 28%, 17%);
+  --sidebar-ring: hsl(220, 91%, 65%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+
+  /* RTL Support */
+  [dir="rtl"] {
+    direction: rtl;
+  }
+
+  [dir="rtl"] .rtl-flip {
+    transform: scaleX(-1);
+  }
+
+  /* Arabic font improvements */
+  body[dir="rtl"] {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Ensure proper text alignment for Arabic */
+  [dir="rtl"] p, [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
+    text-align: right;
+  }
+
+  /* Fix margin and padding for RTL */
+  [dir="rtl"] .ml-2 {
+    margin-left: 0;
+    margin-right: 0.5rem;
+  }
+
+  [dir="rtl"] .mr-2 {
+    margin-right: 0;
+    margin-left: 0.5rem;
+  }
+
+  [dir="rtl"] .ml-3 {
+    margin-left: 0;
+    margin-right: 0.75rem;
+  }
+
+  [dir="rtl"] .ml-4 {
+    margin-left: 0;
+    margin-right: 1rem;
+  }
+
+  [dir="rtl"] .ml-6 {
+    margin-left: 0;
+    margin-right: 1.5rem;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom button styles for better Arabic support */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-medium transition-all;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 px-6 py-3 rounded-lg font-medium transition-all;
+  }
+
+  /* WhatsApp integration styles */
+  .whatsapp-button {
+    @apply bg-green-500 hover:bg-green-600 text-white;
+  }
+
+  /* Social media icons */
+  .social-icon {
+    @apply transition-colors duration-200;
+  }
+
+  .social-icon:hover {
+    @apply transform scale-110;
+  }
+
+  /* Course card hover effects */
+  .course-card {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .course-card:hover {
+    @apply transform -translate-y-2 shadow-xl;
+  }
+
+  /* Admin dashboard styles */
+  .admin-section {
+    @apply space-y-6;
+  }
+
+  /* Custom animations */
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  /* Loading states */
+  .loading-skeleton {
+    @apply bg-gray-200 animate-pulse rounded;
+  }
+
+  /* Error states */
+  .error-state {
+    @apply text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-4;
+  }
+
+  /* Success states */
+  .success-state {
+    @apply text-green-700 bg-green-50 border border-green-200 rounded-lg p-4;
+  }
+
+  /* Hero section gradient overlay */
+  .hero-gradient {
+    background: linear-gradient(to bottom right, #1e3a8a, #7c3aed, #3730a3);
+  }
+
+  .hero-overlay {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  /* Morox brand colors matching design reference */
+  .text-morox-primary {
+    color: #1E40AF;
+  }
+
+  .bg-morox-primary {
+    background-color: #1E40AF;
+  }
+
+  .text-morox-secondary {
+    color: #059669;
+  }
+
+  .bg-morox-secondary {
+    background-color: #059669;
+  }
+
+  .text-morox-accent {
+    color: #DC2626;
+  }
+
+  .bg-morox-accent {
+    background-color: #DC2626;
+  }
+
+  .bg-morox-background {
+    background-color: #F8FAFC;
+  }
+
+  /* Hover effects for social media icons */
+  .social-facebook:hover {
+    color: #1877F2;
+  }
+
+  .social-instagram:hover {
+    color: #E4405F;
+  }
+
+  .social-youtube:hover {
+    color: #FF0000;
+  }
+
+  .social-whatsapp:hover {
+    color: #25D366;
+  }
+
+  /* Certificate section styling */
+  .certificate-card {
+    @apply transition-all duration-300 hover:shadow-lg;
+  }
+
+  /* Footer styling */
+  .footer-link {
+    @apply text-gray-400 hover:text-white transition-colors duration-200;
+  }
+
+  /* Button hover effects */
+  .btn-hover-scale {
+    @apply transition-all duration-200 hover:scale-105;
+  }
+
+  /* Gradient text effect */
+  .gradient-text {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Course category styling */
+  .course-category-ai {
+    @apply border-l-4 border-blue-500;
+  }
+
+  .course-category-academic {
+    @apply border-l-4 border-green-500;
+  }
+
+  /* Loading spinner for Arabic content */
+  .loading-spinner {
+    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-primary;
+  }
+
+  /* Modal backdrop blur effect */
+  .modal-backdrop {
+    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Success message styling */
+  .success-message {
+    @apply bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative;
+  }
+
+  /* Error message styling */
+  .error-message {
+    @apply bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative;
+  }
+
+  /* Form input focus effects for RTL */
+  [dir="rtl"] input:focus, [dir="rtl"] textarea:focus {
+    @apply ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Custom scrollbar for admin dashboard */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+}
