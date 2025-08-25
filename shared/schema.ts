@@ -16,6 +16,7 @@ export const courses = pgTable("courses", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
   description: text("description").notNull(),
+  detailedDescription: text("detailed_description"),
   category: text("category").notNull(), // "ai-skills", "academic", "specialty"
   duration: text("duration").notNull(),
   icon: text("icon").notNull(),
@@ -40,6 +41,14 @@ export const admins = pgTable("admins", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const announcements = pgTable("announcements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertStudentSchema = createInsertSchema(students).pick({
   name: true,
   phone: true,
@@ -48,6 +57,7 @@ export const insertStudentSchema = createInsertSchema(students).pick({
 export const insertCourseSchema = createInsertSchema(courses).pick({
   title: true,
   description: true,
+  detailedDescription: true,
   category: true,
   duration: true,
   icon: true,
@@ -65,6 +75,11 @@ export const insertAdminSchema = createInsertSchema(admins).pick({
   password: true,
 });
 
+export const insertAnnouncementSchema = createInsertSchema(announcements).pick({
+  title: true,
+  content: true,
+});
+
 export type InsertStudent = z.infer<typeof insertStudentSchema>;
 export type Student = typeof students.$inferSelect;
 
@@ -76,3 +91,6 @@ export type Certificate = typeof certificates.$inferSelect;
 
 export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 export type Admin = typeof admins.$inferSelect;
+
+export type InsertAnnouncement = z.infer<typeof insertAnnouncementSchema>;
+export type Announcement = typeof announcements.$inferSelect;
