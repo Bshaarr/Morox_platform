@@ -45,6 +45,11 @@ export class PgStorage implements IStorage {
 		return row as Student;
 	}
 
+	async deleteStudent(id: string): Promise<boolean> {
+		const result = await this.db.delete(studentsTable).where(eq(studentsTable.id, id));
+		return (result as any).rowCount ? (result as any).rowCount > 0 : true;
+	}
+
 	async getCourse(id: string): Promise<Course | undefined> {
 		const [row] = await this.db.select().from(coursesTable).where(eq(coursesTable.id, id));
 		return row as Course | undefined;
