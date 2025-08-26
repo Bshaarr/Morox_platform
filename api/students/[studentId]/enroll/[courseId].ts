@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "../../../../_lib/http";
 import { ensureInitialized } from "../../../../_lib/init";
-import { storage } from "../../../../../server/storage";
+import { getStorage } from "../../../../../server/storage";
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
@@ -15,6 +15,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     const studentId = decodeURIComponent(parts[parts.length - 3] || "");
     const courseId = decodeURIComponent(parts[parts.length - 1] || "");
 
+    const storage = getStorage();
     const student = await storage.getStudent(studentId);
     const course = await storage.getCourse(courseId);
     if (!student || !course) {

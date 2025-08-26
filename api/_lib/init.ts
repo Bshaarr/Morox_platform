@@ -1,9 +1,10 @@
-import { storage } from "../../server/storage";
+import { getStorage } from "../../server/storage";
 
 let initialized = false;
 
 export async function ensureInitialized() {
   if (initialized) return;
+  const storage = getStorage();
   const existing = await storage.getAllCourses();
   if (existing.length === 0) {
     const defaultCourses = [

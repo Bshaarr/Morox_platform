@@ -210,3 +210,13 @@ export class MemStorage implements IStorage {
 }
 
 export const storage = new MemStorage();
+
+export function getStorage(): IStorage {
+	try {
+		if (process.env.DATABASE_URL) {
+			const { PgStorage } = require("./storage.pg");
+			return new PgStorage();
+		}
+	} catch {}
+	return storage;
+}

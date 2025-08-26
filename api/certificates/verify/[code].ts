@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "../../_lib/http";
 import { ensureInitialized } from "../../_lib/init";
-import { storage } from "../../../server/storage";
+import { getStorage } from "../../../server/storage";
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
@@ -14,6 +14,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     const pathParts = url.pathname.split("/").filter(Boolean);
     const code = decodeURIComponent(pathParts[pathParts.length - 1] || "");
 
+    const storage = getStorage();
     const certificates = await storage.getAllCertificates();
     const certificate = certificates.find((c) => c.verificationCode === code);
     if (!certificate) {

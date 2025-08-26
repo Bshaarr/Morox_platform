@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { sendJson, readJsonBody } from "../_lib/http";
 import { ensureInitialized } from "../_lib/init";
-import { storage } from "../../server/storage";
+import { getStorage } from "../../server/storage";
 import { insertStudentSchema } from "../../shared/schema";
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
@@ -12,6 +12,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       return;
     }
     const data = insertStudentSchema.parse(await readJsonBody(req));
+    const storage = getStorage();
     let student = await storage.getStudentByPhone(data.phone);
     if (!student) {
       student = await storage.createStudent(data);
