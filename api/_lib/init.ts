@@ -6,6 +6,8 @@ export async function ensureInitialized() {
   if (initialized) return;
   const storage = getStorage();
   const existing = await storage.getAllCourses();
+  // ensure DB schema on first call
+  try { (await import("../../server/db-init")).ensureDatabaseSetup && await (await import("../../server/db-init")).ensureDatabaseSetup(); } catch {}
   if (existing.length === 0) {
     const defaultCourses = [
       {
