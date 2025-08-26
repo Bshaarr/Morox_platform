@@ -9,10 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import type { Student, Course, Certificate, InsertCourse } from "@shared/schema";
+import type { Student, Course, Certificate, InsertCourse, Announcement } from "@shared/schema";
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -57,6 +58,11 @@ export default function AdminPage() {
     enabled: isAuthenticated,
   });
 
+  const { data: announcements } = useQuery<Announcement[]>({
+    queryKey: ["/api/announcements"],
+    enabled: isAuthenticated,
+  });
+
   const createCourseMutation = useMutation({
     mutationFn: async (courseData: InsertCourse) => {
       const response = await apiRequest("POST", "/api/courses", courseData);
@@ -84,6 +90,72 @@ export default function AdminPage() {
         description: "حدث خطأ أثناء إنشاء الدورة الجديدة",
         variant: "destructive",
       });
+    },
+  });
+
+  const updateCourseMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Course> }) => {
+      const res = await apiRequest("PATCH", `/api/courses/${id}`, updates);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "تم تحديث الدورة", description: "تم حفظ التعديلات" });
+      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
+    },
+  });
+
+  const deleteCourseMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await apiRequest("DELETE", `/api/courses/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "تم حذف الدورة", description: "تمت إزالة الدورة" });
+      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
+    },
+  });
+
+  const createAnnouncementMutation = useMutation({
+    mutationFn: async (data: { title: string; content: string }) => {
+      const res = await apiRequest("POST", "/api/announcements", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "تم إنشاء الإعلان", description: "تمت إضافة إعلان جديد" });
+      queryClient.invalidateQueries({ queryKey: ["/api/announcements"] });
+    },
+  });
+
+  const updateAnnouncementMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Announcement> }) => {
+      const res = await apiRequest("PATCH", `/api/announcements/${id}`, updates);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "تم تحديث الإعلان" });
+      queryClient.invalidateQueries({ queryKey: ["/api/announcements"] });
+    },
+  });
+
+  const deleteAnnouncementMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await apiRequest("DELETE", `/api/announcements/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "تم حذف الإعلان" });
+      queryClient.invalidateQueries({ queryKey: ["/api/announcements"] });
+    },
+  });
+
+  const deleteCertificateMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await apiRequest("DELETE", `/api/certificates/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "تم حذف الشهادة" });
+      queryClient.invalidateQueries({ queryKey: ["/api/certificates"] });
     },
   });
 
@@ -217,11 +289,12 @@ export default function AdminPage() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-5" dir="rtl">
+          <TabsList className="grid w-full grid-cols-6" dir="rtl">
             <TabsTrigger value="overview" data-testid="tab-overview">نظرة عامة</TabsTrigger>
             <TabsTrigger value="students" data-testid="tab-students">الطلاب</TabsTrigger>
             <TabsTrigger value="courses" data-testid="tab-courses">الدورات</TabsTrigger>
             <TabsTrigger value="certificates" data-testid="tab-certificates">الشهادات</TabsTrigger>
+            <TabsTrigger value="announcements" data-testid="tab-announcements">الإعلانات</TabsTrigger>
             <TabsTrigger value="analytics" data-testid="tab-analytics">التحليلات</TabsTrigger>
           </TabsList>
 
@@ -525,6 +598,14 @@ export default function AdminPage() {
                             </p>
                           </div>
                           <div className="flex justify-between items-center text-sm">
+                            <div className="flex gap-2">
+                              <Button size="sm" variant="outline" onClick={() => updateCourseMutation.mutate({ id: course.id, updates: { isActive: !(course as any).isActive } })}>
+                                {course.isActive ? "تعطيل" : "تفعيل"}
+                              </Button>
+                              <Button size="sm" variant="destructive" onClick={() => deleteCourseMutation.mutate(course.id)}>
+                                حذف
+                              </Button>
+                            </div>
                             <span className="text-gray-500">{course.duration}</span>
                             <span className="text-primary font-medium">
                               {course.enrollmentCount || "0"} طالب
@@ -565,6 +646,7 @@ export default function AdminPage() {
                         <TableHead className="text-right">الدورة</TableHead>
                         <TableHead className="text-right">تاريخ الإصدار</TableHead>
                         <TableHead className="text-right">الحالة</TableHead>
+                        <TableHead className="text-right">إجراءات</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -585,6 +667,11 @@ export default function AdminPage() {
                           <TableCell>
                             <Badge variant="default">صالحة</Badge>
                           </TableCell>
+                          <TableCell>
+                            <Button size="sm" variant="destructive" onClick={() => deleteCertificateMutation.mutate(certificate.id)}>
+                              حذف
+                            </Button>
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -598,6 +685,74 @@ export default function AdminPage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+			{/* Announcements Tab */}
+			<TabsContent value="announcements" className="space-y-6">
+				<Card>
+					<CardHeader className="flex flex-row items-center justify-between">
+						<CardTitle>إدارة الإعلانات</CardTitle>
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button data-testid="button-add-announcement">
+									<i className="fas fa-plus ml-2"></i>
+									إضافة إعلان
+								</Button>
+							</DialogTrigger>
+							<DialogContent dir="rtl">
+								<DialogHeader>
+									<DialogTitle>إضافة إعلان</DialogTitle>
+								</DialogHeader>
+								<div className="space-y-4">
+									<div>
+										<Label htmlFor="announcement-title">العنوان</Label>
+										<Input id="announcement-title" data-testid="input-announcement-title" onChange={(e) => (window as any)._annTitle = e.target.value} />
+									</div>
+									<div>
+										<Label htmlFor="announcement-content">المحتوى</Label>
+										<Textarea id="announcement-content" data-testid="input-announcement-content" onChange={(e) => (window as any)._annContent = e.target.value} />
+									</div>
+									<Button className="w-full" onClick={() => createAnnouncementMutation.mutate({ title: (window as any)._annTitle || "", content: (window as any)._annContent || "" })}>
+										إنشاء
+									</Button>
+								</div>
+							</DialogContent>
+						</Dialog>
+					</CardHeader>
+					<CardContent>
+						{announcements && announcements.length > 0 ? (
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead className="text-right">العنوان</TableHead>
+										<TableHead className="text-right">المحتوى</TableHead>
+										<TableHead className="text-right">نشط</TableHead>
+										<TableHead className="text-right">إجراءات</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{announcements.map((a) => (
+										<TableRow key={a.id}>
+											<TableCell className="font-medium">{a.title}</TableCell>
+											<TableCell className="text-sm text-gray-600">{a.content}</TableCell>
+											<TableCell>
+												<Switch checked={!!a.isActive} onCheckedChange={(v) => updateAnnouncementMutation.mutate({ id: a.id, updates: { isActive: v } })} />
+											</TableCell>
+											<TableCell>
+												<Button size="sm" variant="destructive" onClick={() => deleteAnnouncementMutation.mutate(a.id)}>حذف</Button>
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						) : (
+							<div className="text-center py-8">
+								<i className="fas fa-bullhorn text-4xl text-gray-400 mb-4"></i>
+								<p className="text-gray-600">لا توجد إعلانات</p>
+							</div>
+						)}
+					</CardContent>
+				</Card>
+			</TabsContent>
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">

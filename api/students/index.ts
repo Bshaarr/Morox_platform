@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "../_lib/http";
 import { ensureInitialized } from "../_lib/init";
-import { storage } from "../../server/storage";
+import { getStorage } from "../../server/storage";
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
@@ -10,6 +10,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       sendJson(res, 405, { message: "Method Not Allowed" });
       return;
     }
+    const storage = getStorage();
     const students = await storage.getAllStudents();
     sendJson(res, 200, students);
   } catch {

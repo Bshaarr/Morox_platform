@@ -1,18 +1,20 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { sendJson, readJsonBody } from "../_lib/http";
 import { ensureInitialized } from "../_lib/init";
-import { storage } from "../../server/storage";
+import { getStorage } from "../../server/storage";
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
     await ensureInitialized();
     if (req.method === "GET") {
+      const storage = getStorage();
       const certificates = await storage.getAllCertificates();
       sendJson(res, 200, certificates);
       return;
     }
     if (req.method === "POST") {
       const { studentId, courseId } = await readJsonBody<{ studentId: string; courseId: string }>(req);
+      const storage = getStorage();
       const students = await storage.getStudent(studentId);
       const course = await storage.getCourse(courseId);
       if (!students || !course) {
