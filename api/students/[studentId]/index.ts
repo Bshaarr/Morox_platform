@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "http";
-import { sendJson, readJsonBody } from "../_lib/http";
-import { ensureInitialized } from "../_lib/init";
-import { getStorage } from "../../server/storage";
+import { sendJson, readJsonBody } from "../../_lib/http";
+import { ensureInitialized } from "../../_lib/init";
+import { getStorage } from "../../../server/storage";
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   await ensureInitialized();
