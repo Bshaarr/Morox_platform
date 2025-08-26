@@ -102,6 +102,30 @@ export default function AdminDashboard({ open, onOpenChange }: AdminDashboardPro
     },
   });
 
+  // Student actions
+  const deleteStudentMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await apiRequest("DELETE", `/api/students/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "تم حذف الطالب" });
+      queryClient.invalidateQueries({ queryKey: ["/api/students"] });
+    },
+  });
+
+  const enrollStudentMutation = useMutation({
+    mutationFn: async ({ studentId, courseId }: { studentId: string; courseId: string }) => {
+      const res = await apiRequest("POST", `/api/students/${studentId}/enroll/${courseId}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "تم تسجيل الطالب في الدورة" });
+      queryClient.invalidateQueries({ queryKey: ["/api/students"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
+    },
+  });
+
   // Announcements CRUD
   const createAnnouncementMutation = useMutation({
     mutationFn: async (data: { title: string; content: string }) => {
@@ -275,8 +299,12 @@ export default function AdminDashboard({ open, onOpenChange }: AdminDashboardPro
                           {student.phone}
                         </p>
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {new Date(student.createdAt || "").toLocaleDateString("ar-EG")}
+                      <div className="flex items-center gap-3">
+                        <Button size="sm" variant="outline" onClick={() => courses?.[0] && enrollStudentMutation.mutate({ studentId: student.id, courseId: courses[0].id })}>تسجيل بأول دورة</Button>
+                        <Button size="sm" variant="destructive" onClick={() => deleteStudentMutation.mutate(student.id)}>حذف</Button>
+                        <div className="text-sm text-gray-500">
+                          {new Date(student.createdAt || "").toLocaleDateString("ar-EG")}
+                        </div>
                       </div>
                     </div>
                   )) || (

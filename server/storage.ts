@@ -8,6 +8,7 @@ export interface IStorage {
   getAllStudents(): Promise<Student[]>;
   createStudent(student: InsertStudent): Promise<Student>;
   updateStudent(id: string, updates: Partial<InsertStudent>): Promise<Student>;
+  deleteStudent(id: string): Promise<boolean>;
 
   // Course operations
   getCourse(id: string): Promise<Course | undefined>;
@@ -83,6 +84,10 @@ export class MemStorage implements IStorage {
     const updatedStudent = { ...student, ...updates } as Student;
     this.students.set(id, updatedStudent);
     return updatedStudent;
+  }
+
+  async deleteStudent(id: string): Promise<boolean> {
+    return this.students.delete(id);
   }
 
   // Course operations
@@ -212,11 +217,11 @@ export class MemStorage implements IStorage {
 export const storage = new MemStorage();
 
 export function getStorage(): IStorage {
-	try {
-		if (process.env.DATABASE_URL) {
-			const { PgStorage } = require("./storage.pg");
-			return new PgStorage();
-		}
-	} catch {}
-	return storage;
+  try {
+    if (process.env.DATABASE_URL) {
+      const { PgStorage } = require("./storage.pg");
+      return new PgStorage();
+    }
+  } catch {}
+  return storage;
 }
